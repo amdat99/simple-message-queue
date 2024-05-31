@@ -1,0 +1,46 @@
+.message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-radius: 5px;
+  padding: 0px 10px 0px 10px;
+  border: 1px solid #787676;
+  margin: 5px 0px 5px 0px;
+  position: relative;
+}
+
+.message span {
+  margin-left: 50px;
+  font-size: 12px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.inputContainer input {
+  padding: 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin-right: 10px;
+  min-width: 250px;
+}
+
+.inputContainer button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.inputContainer button:hover {
+  background-color: #e0e0e0;
+  transition: all 0.3s;
+}
