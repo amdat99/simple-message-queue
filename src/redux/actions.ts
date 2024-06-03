@@ -23,25 +23,30 @@ export interface RemoveMessageAction {
 
 export type MessageActionTypes = AddMessageAction | RemoveMessageAction;
 
-export const addMessage =
-  (message: MessagePayload, noFirestore = false) =>
-  async (dispatch: any) => {
-    if (!noFirestore) {
-      message.timestamp = Date.now();
-      await setDoc(doc(db, "messages", message.id), { message: message.message, timestamp: message.timestamp, sessionId: message.sessionId });
-    }
+export const addMessageToFirestoreAsync = async (message: MessagePayload) => {
+  await setDoc(doc(db, "messages", message.id), { message: message.message, timestamp: message.timestamp, sessionId: message.sessionId });
+};
+
+export const addMessage = (message: MessagePayload) => {
+  return async (dispatch: any) => {
+    await addMessageToFirestoreAsync(message);
     dispatch({
       type: ADD_MESSAGE,
       payload: message,
     });
   };
+};
 
-export const removeMessage =
-  (id: string, noFirestore = false) =>
-  async (dispatch: any) => {
-    if (!noFirestore) await deleteDoc(doc(db, "messages", id));
+export const removeMessageFromFirestoreAsync = async (id: string) => {
+  await deleteDoc(doc(db, "messages", id));
+};
+
+export const removeMessage = (id: string) => {
+  return async (dispatch: any) => {
+    await removeMessageFromFirestoreAsync(id);
     dispatch({
       type: REMOVE_MESSAGE,
       payload: id,
     });
   };
+};

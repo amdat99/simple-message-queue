@@ -6,7 +6,7 @@ import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { firebaseConfig } from "./firebase/config";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./redux/store";
-import { addMessage, removeMessage } from "./redux/actions";
+import { addMessage, addMessageToFirestoreAsync, removeMessage, removeMessageFromFirestoreAsync } from "./redux/actions";
 import MessageBubble from "./components/MessageBubble";
 import SendMessageBox from "./components/SendMessageBox";
 
@@ -34,9 +34,9 @@ function App() {
         if (change.doc.data().sessionId === sessionId) return;
         else if (change.type === "added") {
           const message = { id: change.doc.id, ...change.doc.data() } as MessageState;
-          dispatch(addMessage(message, true));
+          dispatch(addMessage(message));
         } else if (change.type === "removed") {
-          dispatch(removeMessage(change.doc.id, true));
+          dispatch(removeMessage(change.doc.id));
         }
       });
     });
@@ -48,14 +48,26 @@ function App() {
     try {
       if (!message) return;
       const id = uuidv4();
-      await dispatch(addMessage({ message, id, sessionId }));
+      const messageParams = { message, id, sessionId, timestamp: Date.now() } as MessageState;
+      await addMessageToFirestoreAsync(messageParams);
+      dispatch(addMessage(messageParams));
       //After 5000ms, remove the message from the queue
-      setTimeout(() => dispatch(removeMessage(id)), 5000);
+      setTimeout(() => removeMessageFromQueue(id), 5000);
       setInputText("");
       messageBoxRef.current?.scrollTo(0, messageBoxRef.current.scrollHeight);
     } catch (error) {
       console.log(error);
       alert("Error sending message");
+    }
+  };
+
+  const removeMessageFromQueue = async (id: string) => {
+    try {
+      await removeMessageFromFirestoreAsync(id);
+      dispatch(removeMessage(id));
+    } catch (error) {
+      console.log(error);
+      alert("Error removing message");
     }
   };
 
