@@ -28,8 +28,7 @@ export const addMessageToFirestoreAsync = async (message: MessagePayload) => {
 };
 
 export const addMessage = (message: MessagePayload) => {
-  return async (dispatch: any) => {
-    await addMessageToFirestoreAsync(message);
+  return (dispatch: any) => {
     dispatch({
       type: ADD_MESSAGE,
       payload: message,
@@ -42,8 +41,7 @@ export const removeMessageFromFirestoreAsync = async (id: string) => {
 };
 
 export const removeMessage = (id: string) => {
-  return async (dispatch: any) => {
-    await removeMessageFromFirestoreAsync(id);
+  return (dispatch: any) => {
     dispatch({
       type: REMOVE_MESSAGE,
       payload: id,
